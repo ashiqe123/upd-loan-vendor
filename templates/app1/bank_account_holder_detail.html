@@ -1,0 +1,469 @@
+{% extends 'app1/base.html' %}
+{% block body %}
+    {% load static %}
+
+    <style>
+        .card-registration .select-input.form-control[readonly]:not([disabled]) {
+            font-size: 1rem;
+            line-height: 2.15;
+            padding-left: .75em;
+            padding-right: .75em;
+        }
+        .card-registration .select-arrow {
+            top: 13px;
+        }
+        .bg-grey {
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        @media (min-width: 992px) {
+            .card-registration-2 .bg-grey {
+                border-top-right-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+        }
+        @media (max-width: 991px) {
+            .card-registration-2 .bg-grey {
+                border-bottom-left-radius: 16px;
+                border-bottom-right-radius: 16px;
+            }
+        }
+        .vl {
+            border-left: 6px solid gray;
+        }
+        .table-row{
+        cursor:pointer;
+}
+/* hr {
+        border: 0;
+        clear:both;
+        display:block;
+        width: 96%;               
+        background-color:#000000;
+        height: 1px;
+      } */
+    .spaced>li {
+        color:black;
+        font-size:10px;
+    }
+
+    .table1{
+        font-size:10px;
+        width:100% ;
+        color:black;
+
+    }
+    .label-lg {
+            padding: .3em .6em .4em;
+            font-size: 12px;
+            color:black;
+            line-height: 1.1;
+            height: 24px
+    }
+    .widget-header{
+        background-color:#444;
+        color:white;
+        font-size:14px;
+    }
+    .widget-header:after,
+    .widget-header:before {
+            content: "";
+            display: table;
+            line-height: 0
+    }
+    .widget-header:after {
+            clear: right
+    }
+    .widget-box.collapsed>.widget-header {
+            border-bottom-width: 0
+        }
+        
+        .collapsed.fullscreen>.widget-header {
+            border-bottom-width: 1px
+        }
+        
+        .collapsed>.widget-body {
+            display: none
+        }
+        
+        .widget-header-flat {
+            background: #F7F7F7
+        }
+        
+        .widget-header-large {
+            min-height: 49px;
+            padding-left: 18px
+        }
+        
+
+        
+        .widget-header-small {
+            min-height: 31px;
+            padding-left: 10px
+        }
+        
+        .widget-header>.widget-title {
+            line-height: 36px;
+            padding: 0;
+            margin: 0;
+            display: inline;
+            font-size:13px;
+        }
+        
+        
+        
+        .widget-toolbar {
+            display: inline-block;
+            padding: 0 10px;
+            line-height: 37px;
+            float: right;
+            position: relative
+        }
+        
+        
+        
+        
+        
+       
+        
+        .widget-body {
+            background-color: #FFF
+        }
+        
+        .widget-main {
+            padding: 12px
+        }
+        
+       
+    </style>
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js" ></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha384-ezFjoDpKt46r5VYfoRMoGtN5QXSw2CQZfP1zpgFF4ZAtDz6By5v/zy0N5Lw6Vf6fP" crossorigin="anonymous">
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+    <div class="page-content " >
+        <div class="card radius-15">
+            <div class="card-body">
+                
+                    <center><h2 class="text-center my-4">Bank Account Details</h2></center>
+                    <hr>
+                    <div class="btn-group" style="float: left; ">
+                       
+                            
+                        
+                        <div>
+                            <center>
+                              
+                                  
+                                <p href="" class="btn btn-primary  text-grey mt-3 " style="font-size: larger;background-color:rgba(0,0,0,.01);">
+                                   Overview
+                                </p>
+                                    </center>
+                                    </div>
+                                    </div>
+                    <div class="btn-group" style="float: right; ">
+                       
+                            
+                        
+                            <div>
+                                <center>
+                                  
+                                      
+                                    <a href="{% url 'edit_bank_account' account.id %}" class="btn btn-outline-info  text-grey mt-3 "    style="border: 1px solid rgb(1, 100, 139);padding: 10px;">
+                                        Edit
+                                    </a>&nbsp;&nbsp;&nbsp;
+                                    {% if account.is_active %}
+                                    <a href="{% url 'inactivate_bank_account' account.id%}" class="btn btn-outline-info dropdown-toggle   text-grey mt-3 " style="border: 1px solid rgb(1, 100, 139);padding: 10px;">Activate</a> &nbsp;&nbsp;&nbsp;
+                                    {% else %}
+                                    <a href="{% url 'active_bank_account' account.id%}" class="btn btn-outline-info dropdown-toggle   text-grey mt-3 " style="border: 1px solid rgb(1, 100, 139);padding: 10px;">Inactivate</a> &nbsp;&nbsp;&nbsp;
+                                    {% endif %}
+                                   
+                                    <a href="{% url 'deletebank_holder' account.id%}" class="btn btn-outline-info  text-grey mt-3 " style="border: 1px solid rgb(1, 100, 139);padding: 10px;">
+                                        Delete</a>
+                                </center>
+                            </div>
+                            
+                            
+                        
+                    </div> 
+                </div>
+            </div>
+        </div>
+
+
+        <div class="card card-registration card-registration-2" style="border-radius: 15px;"  >
+            
+               
+                
+            <div class="row">
+                    
+                <div class="col-md-6">
+                        <div class="p-5">
+                            
+                           
+                            <h5 style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Account Information</h5>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-2 mt-3">
+                                    <h7 class="mb-0" style="white-space: nowrap;">Holder Name :</h7>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">&nbsp; &nbsp;{{ account.holder_name }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h7 class="mb-0" style="white-space: nowrap;">Account No :</h7>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">&nbsp; &nbsp;{{ account.account_number }}</p>
+                                </div>
+                            </div>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-2 mt-3">
+                                    <h7 class="mb-0" style="white-space: nowrap;">IFSC Code :</h7>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">&nbsp; &nbsp;{{ account.ifsc_code  }}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h7 class="mb-0" style="white-space: nowrap;">SWIFT Code :</h7>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0"> &nbsp; &nbsp;{{  account.swift_code  }}</p>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-2 mt-3">
+                                    <h7 class="mb-0" style="white-space: nowrap;">Bank Name :</h7>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">&nbsp; &nbsp;{{ account.bank_name}}</p>
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h7 class="mb-0" style="white-space: nowrap;">Branch Name :</h7>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0"> &nbsp; &nbsp;{{  account.branch_name  }}</p>
+                                </div>
+                            </div>
+
+
+
+                            <hr class="my-4">
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="col-md-4 mt-3">
+                                   
+
+
+
+
+
+                                
+                            
+                           
+                        </div>
+                        
+                    </div>
+                    <h5 class="fw-bold mb-5 mt-2 pt-1" style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Tax Information</h5>
+                    
+                    <div class="d-flex justify-content-between mb-4">
+                        <h6 class="">PAN/IT Number:</h6>
+                        <h6>{{ banking_details.pan_it_number }}</h6>
+                    </div>
+                    {% if banking_details.gstin_un %}
+                    <div class="d-flex justify-content-between mb-4">
+                    <h6 class="">GSTIN/UN:</h6>
+                    
+                    <h6>  {{banking_details.gstin_un  }}</h6>
+                    </div>
+                    {%else%}
+                    <div class=" justify-content-between mb-4" style="display: none;">
+                        <h6 class="">GSTIN/UN:</h6>
+                        
+                        <h6>  </h6>
+                        </div>
+                    {% endif %}
+                    <div class="d-flex justify-content-between mb-4">
+                        <h6 class="">GST Type:</h6>
+                        <h6>{{ banking_details.registration_type }}</h6>
+                    </div>
+                    
+                </div>
+
+
+                
+                
+                    <div class="p-5">
+                            <hr class="my-4">
+                            <div class="">
+                               
+                            
+                            
+                    
+                  <h5 class="fw-bold mb-5 mt-2 pt-1" style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Bank Configuration</h5>
+                            
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">Set Cheque Book Range:</h6>
+                                <h6>{{bank_configuration.set_cheque_book_range|yesno:"Yes,No" }}</h6>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4">
+                            <h6 class="">Enable Cheque Printing:</h6>
+                            
+                            <h6>  {{  bank_configuration.enable_cheque_printing|yesno:"Yes,No"   }}</h6>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">Set Cheque Printing Configuration:</h6>
+                                <h6>{{ bank_configuration.set_cheque_printing_configuration|yesno:"Yes,No" }}</h6>
+                            </div>
+                            
+                        </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6 bg-grey">
+                        <div class="p-5">
+                          
+                            <h5 class="fw-bold mb-5 mt-2 pt-1" style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Bank Account Holder Information</h5>
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                            <div class="col-md-2 mt-3">
+                                <h7 class="mb-0">Name</h7>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <p class="mb-0">{{ holder.name }}</p>
+                            </div>
+                            <div class="col-md-2 mt-3 vl">
+                                <h7 class="mb-0">Alias</h7>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <p class="mb-0">{{ holder.alias  }}</p>
+                            </div>
+                        </div>
+                        <div class="row mb-4 d-flex justify-content-between align-items-center">
+                            <div class="col-md-2 mt-3">
+                                <h7 class="mb-0">Phone No</h7>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <p class="mb-0">{{ holder.phone_number  }}</p>
+                            </div>
+                            <div class="col-md-2 mt-3 vl">
+                                <h7 class="mb-0">Email</h7>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <p class="mb-0">{{  holder.email }}</p>
+                            </div>
+                        </div>
+
+                        <div class="row mb-4 d-flex justify-content-between align-items-center">
+                            <div class="col-md-2 mt-3">
+                                <h7 class="mb-0" style="white-space: nowrap;">Account Type</h7>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                <p class="mb-0">{{ holder.account_type}}</p>
+                            </div>
+                            <div class="col-md-2 mt-3 vl">
+                                <h7 class="mb-0">Status</h7>
+                            </div>
+                            <div class="col-md-4 mt-3">
+                                {% if account.is_active %}
+                                <p class="mb-0">Active</p>
+                                {% else %}
+                                <p class="mb-0">Inactive</p>
+                                {% endif %}
+                            </div>
+                            <div class="d-flex justify-content-between mb-4">
+                               
+                            </div>
+                        </div>
+                        
+                            <hr class="my-4">
+                            {% if mailing_address and mailing_address.mailing_name and mailing_address.address and mailing_address.country and mailing_address.state and mailing_address.pin %}
+                            <h5 class="fw-bold mb-5 mt-2 pt-1" style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); width: fit-content;">Mailing Address</h5>
+                            
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">Name</h6>
+                                <h6>{{ mailing_address.mailing_name }}</h6>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4">
+                            <h6 class="">Address</h6>
+                            
+                            <h6>  {{ mailing_address.address }}</h6>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">Country</h6>
+                                <h6>{{ mailing_address.country  }}</h6>
+                            </div>
+                            <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">State</h6>
+                                <h6>{{ mailing_address.state }}</h6>
+                            </div> <div class="d-flex justify-content-between mb-4">
+                                <h6 class="">PIN Code</h6>
+                                <h6>{{mailing_address.pin}}</h6>
+
+                            </div>
+                            {% else %}
+                            <p>No mailing address found.</p>            
+                            {% endif %}
+                           
+                            <hr class="my-4">
+                            <div class="row mb-4 d-flex justify-content-between align-items-center">
+                                <div class="">
+                                    <h5 style="border-bottom: 1px solid rgba(128, 128, 128, 0.6); ">Opening Balance</h5>
+                                </div>
+                               
+                                <div class="col-md-4 mt-3"></div>
+                                <div class="col-md-4 mt-3"></div>
+
+                                <div class="col-md-2 mt-3">
+                                    <h7 class="mb-0">Amount:</h7>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{opening_balance.amount|floatformat:2 }}</p>
+                                    
+                                </div>
+                                <div class="col-md-2 mt-3 vl">
+                                    <h7 class="mb-0">Date:</h7>
+                                </div>
+                                <div class="col-md-4 mt-3">
+                                    <p class="mb-0">{{ opening_balance.date|date:"F j, Y"  }}</p>
+                                </div>
+                                
+                            </div>
+                           
+                                
+                            </div> 
+                    </div>
+                </div>
+
+
+
+               
+                        
+                        
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+                    
+
+                   
+                           
+                    
+
+{% endblock %}

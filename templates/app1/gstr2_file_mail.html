@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSTR2</title>
+    <style>
+        table {
+            width: 100%; /* Set the table width to 100% of the container */
+            border-collapse: collapse;
+            border-color: black;
+        }
+    
+        th, td {
+        font-size: 8px; /* Adjust the font size as needed */
+        padding-top: 10px;
+        padding-bottom: 20px;
+        padding-left: 30px;
+        padding-right: 30px;
+    
+      
+    }
+    th{
+        border-color: black;
+    }
+    td{
+        border-color: black;  
+    }
+    </style>
+</head>
+<body>
+    
+
+    <div class="page-content">
+        <div class="card radius-15" style="width: 100%">
+            <div class="card-body">
+                <div class="card-title">
+                    <center>
+                        <h6>{{cmp1.cname}}</h6>
+                        <h2 class="mb-0">GSTR-2 REPORT</h2>
+                        <div class="display">
+                            <div id="d1" style="display: inline-block;"></div>
+                            <div id="d2" style="display: inline-block;"></div>
+                        </div>
+                    </center>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    
+
+
+
+
+
+
+
+    
+    <div class="card radius-15 print-only" id="pdf-card" style="width: 100%;">
+        <div class="card-body">
+            <div class="container-fluid">
+
+                    <table class="table table-bordered table-info table-striped tb  w-100"
+                    style="text-align: center;border-color: black; width: 1260px;"
+                   id="myTable">
+                    <thead>
+                        <tr  class="text-center"
+                        style="width: 1260px;">
+                            <th colspan="5" style="text-align: center;">Invoice Details</th>
+                            <th rowspan="2" style="text-align: center;">Tax Rate</th>
+                            <th rowspan="2" style="text-align: center;">Cess Rate</th>
+                            <th rowspan="2" style="text-align: center;">Taxable Value</th>
+                            <th colspan="4" style="text-align: center;">Amount</th>
+                            <th  rowspan="2" style="text-align: center;" >Place of Supply</th>
+                            
+                            
+                      
+                        </tr>
+                        <tr class="text-center"
+                        style="width: 1260px;">
+                            <th style="text-align: center;">GSTIN/UIN</th>
+                            <th style="text-align: center;">Party Name </th>
+                            <th style="text-align: center;">No.</th>
+                            <th style="text-align: center;">Date</th>
+                            <th style="text-align: center;">Value</th>
+                            
+                           
+                            <th style="text-align: center;">Integrated Tax</th>
+                            <th style="text-align: center;">Central Tax</th>
+                            <th style="text-align: center;">State/UT Tax</th>
+                            <th style="text-align: center;">Cess</th>
+                         
+                          
+                          
+                            
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for i in bill %}
+                        <tr class="text-center" style="width: 1260px;">
+                            <td >{{i.vendor_gstin}}</td>
+                            <td >{{i.vendor_name}}</td>
+                            <td >{{i.bill_no}}</td>
+                            <td >{{i.date}}</td>
+                            <td >{{i.round_off}}</td>
+                            {% for b in pbill %}
+                            {% if b.bill_id == i.billid %}
+                            <td  >{{b.tax}}</td>
+                            {%endif%}
+                            {%endfor%}
+                            <td  >0</td>
+                            <td  >{{ i.tax_amount}}</td>
+                            <td >{{i.igst}}</td>
+                            <td >{{i.sgst}}</td>
+                            <td >{{i.cgst}}</td>
+                            <td >0</td>
+                            <td  >{{ i.sourceofsupply}}</td>
+
+                            
+                        </tr>
+                        {% endfor %}
+
+
+                        {% for trans in pdebt %}
+                     
+                        <tr class="text-center" style="width: 1260px;" >
+                            <td>{{trans.gstin}}</td>
+                            <td >{{ trans.vendor }}</td>
+                            <td >{{  trans.debit_no }}</td>
+                            <td >{{ trans.debitdate }}</td>
+                            <td >{{ trans.round_off }}</td>
+                            {% for d in pdebt1 %}
+                            {% if d.pdebit_id == trans.pdebitid %}
+                            <td  >{{d.tax}}</td>
+                           {%endif%}
+                           {%endfor%}
+                            <td >0</td>
+                            <td  >{{ trans.taxamount}}</td>
+                            <td  >{{trans.igst}}</td>
+                            <td >{{trans.sgst}}</td>
+                            <td >{{trans.cgst}}</td>
+                            <td >0</td>
+                            <td >{{ trans.supply}}</td>
+                            
+
+                        </tr>
+                     
+                        {% endfor%}
+
+                        {% for i in rbill %}
+                        <tr class="text-center" style="width: 1260px;">
+                            <td >{{i.gstin}}</td>
+                            <td >{{i.vendor_name}}</td>
+                            <td >{{i.billno}}</td>
+                            <td >{{i.start_date}}</td>
+                            <td >{{i.adjustment}}</td>
+                            {% for r in ritem %}
+                            {% if r.bill_id == i.rbillid %}
+                            <td>{{r.tax}}</td>
+                            {%endif%}
+                            {%endfor%}
+                            <td>0</td>
+                            <td >{{ i.tax_amount}}</td>
+                            <td >{{i.igst}}</td>
+                            <td>{{i.sgst}}</td>
+                            <td>{{i.cgst}}</td>
+                            <td >0</td>
+                            <td>{{ i.place_supply}}</td>
+
+                            
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
