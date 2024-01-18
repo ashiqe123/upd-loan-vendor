@@ -34166,12 +34166,7 @@ def viewvendor(request, id):
         toda = date.today()
         tod = toda.strftime("%Y-%m-%d")
 
-        if vndr.opening_balance_type == 'Credit':
-            vndr.openingbalance *= -1
-        else:
-            vndr.openingbalance = abs(vndr.openingbalance)
 
-        vndr.save()
 
         pbill = purchasebill.objects.filter(vendor_name=su,status='Approved',date=tod)
         pymnt = purchasepayment.objects.filter(vendor=su, paymentdate=tod)
@@ -34186,9 +34181,10 @@ def viewvendor(request, id):
         tot2 = recurring_bill.objects.filter(cid=cmp1, vendor_name=su).all().aggregate(t2=Sum('paid_amount'))
         tot4 = recurring_bill.objects.filter(cid=cmp1, vendor_name=su).all().aggregate(t2=Sum('balance'))
         tot5 = purchasedebit.objects.filter(cid=cmp1, vendor=su).all().aggregate(t2=Sum('paid_amount'))
-        tot8 = purchasedebit.objects.filter(cid=cmp1, vendor=su).all().aggregate(t2=Sum('balance_amount'))
+        tot8 = purchasedebit.objects.filter(cid=cmp1, vendor=su).all().aggregate(t2=Sum('grandtotal'))
         tot9 = vendor.objects.filter(cid=cmp1, vendorid=id).all().aggregate(t2=Sum('openingbalance'))
-
+        print(tot8)
+        print('tot8')
         print(float(tot1['t2'] or 0))
         # Corrected total balance calculation
         total_balance = (
@@ -34197,6 +34193,7 @@ def viewvendor(request, id):
             float(tot6['t2'] or 0) +
             float(tot4['t2'] or 0) 
             )
+        total_balance = total_balance - float(tot8['t2'] or 0)
         print(total_balance)
 
 
@@ -34294,9 +34291,9 @@ def viewvendor(request, id):
                 'paid':paid_amount,
 
             })    
-
+ 
         for item in paymnt:
-            Type='Payment'
+            Type='Purchase Payment'
             Number=int(item.pymntid)
             Date=item.paymentdate
             Total = int(item.paymentamount) if item.paymentamount else 0
@@ -34328,13 +34325,14 @@ def viewvendor(request, id):
             Date=item.debitdate
             Total=int(item.grandtotal)
             Balance=float(item.balance_amount)
-
+            bal =vndr.balance_amount - int(item.grandtotal)
+            vndr.balance_amount = bal
             combined_data.append({
                 'Type':Type,
                 'Number':Number,
                 'Date':Date,
                 'Total':Total,
-                'Balance':Balance,
+                'Balance':bal,
                 'paid':0
 
             })    
@@ -46048,7 +46046,7 @@ def get_transaction_data(request,id):
             })
 
         for item in paymnt:
-            Type = 'Payment'
+            Type = 'Purchase Payment'
             Number = int(item.pymntid)
             Date = item.paymentdate
             Total = int(item.paymentamount) if item.paymentamount else 0
@@ -46065,20 +46063,25 @@ def get_transaction_data(request,id):
                 'Balance': Balance
             })
 
-        for item in pdeb:
-            Type = 'Debit Note'
-            Number = int(item.debit_no)
-            Date = item.debitdate
-            Total = int(item.grandtotal)
-            Balance = 'None'
 
+        for item in pdeb:
+            Type='Debit Note'
+            Number=int(item.debit_no)
+            Date=item.debitdate
+            Total=int(item.grandtotal)
+            Balance=float(item.balance_amount)
+            bal =vndr.balance_amount - int(item.grandtotal)
+            vndr.balance_amount = bal
             combined_data.append({
-                'Type': Type,
-                'Number': Number,
-                'Date': Date,
-                'Total': Total,
-                'Balance': Balance
-            })
+                'Type':Type,
+                'Number':Number,
+                'Date':Date,
+                'Total':Total,
+                'Balance':bal,
+                'paid':0
+
+            })    
+
 
         for item in expnc:
             Type = 'Expense'
@@ -55635,7 +55638,7 @@ def VendorStatement_mail(request,id):
                             })    
 
                         for item in paymnt:
-                            Type='Payment'
+                            Type='Purchase Payment'
                             Number=int(item.pymntid)
                             Date=item.paymentdate
                             Total = int(item.paymentamount) if item.paymentamount else 0
@@ -55667,13 +55670,14 @@ def VendorStatement_mail(request,id):
                             Date=item.debitdate
                             Total=int(item.grandtotal)
                             Balance=float(item.balance_amount)
-
+                            bal =vndr.balance_amount - int(item.grandtotal)
+                            vndr.balance_amount = bal
                             combined_data.append({
                                 'Type':Type,
                                 'Number':Number,
                                 'Date':Date,
                                 'Total':Total,
-                                'Balance':Balance,
+                                'Balance':bal,
                                 'paid':0
 
                             })    
@@ -55813,7 +55817,7 @@ def VendorStatement_mail(request,id):
                             })    
 
                         for item in paymnt:
-                            Type='Payment'
+                            Type='Purchase Payment'
                             Number=int(item.pymntid)
                             Date=item.paymentdate
                             Total = int(item.paymentamount) if item.paymentamount else 0
@@ -55839,22 +55843,24 @@ def VendorStatement_mail(request,id):
 
                             }) 
 
+                        
                         for item in pdeb:
                             Type='Debit Note'
                             Number=int(item.debit_no)
                             Date=item.debitdate
                             Total=int(item.grandtotal)
                             Balance=float(item.balance_amount)
-
+                            bal =vndr.balance_amount - int(item.grandtotal)
+                            vndr.balance_amount = bal
                             combined_data.append({
                                 'Type':Type,
                                 'Number':Number,
                                 'Date':Date,
                                 'Total':Total,
-                                'Balance':Balance,
+                                'Balance':bal,
                                 'paid':0
 
-                            })    
+                            })
 
                         
                         for item in expnc:
@@ -56082,22 +56088,25 @@ def vendor_statement(request,id):
 
                 }) 
 
+
             for item in pdeb:
-                Type='Debit Note'
-                Number=int(item.debit_no)
-                Date=item.debitdate
-                Total=int(item.grandtotal)
-                Balance=float(item.balance_amount)
+                        Type='Debit Note'
+                        Number=int(item.debit_no)
+                        Date=item.debitdate
+                        Total=int(item.grandtotal)
+                        Balance=float(item.balance_amount)
+                        bal =vndr.balance_amount - int(item.grandtotal)
+                        vndr.balance_amount = bal
+                        combined_data.append({
+                            'Type':Type,
+                            'Number':Number,
+                            'Date':Date,
+                            'Total':Total,
+                            'Balance':bal,
+                            'paid':0
 
-                combined_data.append({
-                    'Type':Type,
-                    'Number':Number,
-                    'Date':Date,
-                    'Total':Total,
-                    'Balance':Balance,
-                    'paid':0
-
-                })    
+                        })  
+                
 
             
             for item in expnc:
@@ -56238,7 +56247,7 @@ def vendor_statement(request,id):
                 })    
 
             for item in paymnt:
-                Type='Payment'
+                Type='Purchase Payment'
                 Number=int(item.pymntid)
                 Date=item.paymentdate
                 Total = int(item.paymentamount) if item.paymentamount else 0
@@ -56264,23 +56273,24 @@ def vendor_statement(request,id):
 
                 }) 
 
+
             for item in pdeb:
                 Type='Debit Note'
                 Number=int(item.debit_no)
                 Date=item.debitdate
                 Total=int(item.grandtotal)
                 Balance=float(item.balance_amount)
-
+                bal =vndr.balance_amount - int(item.grandtotal)
+                vndr.balance_amount = bal
                 combined_data.append({
                     'Type':Type,
                     'Number':Number,
                     'Date':Date,
                     'Total':Total,
-                    'Balance':Balance,
+                    'Balance':bal,
                     'paid':0
 
-                })    
-
+                })
             
             for item in expnc:
                 Type='Expense'
