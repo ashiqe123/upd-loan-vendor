@@ -34193,7 +34193,7 @@ def viewvendor(request, id):
             float(tot6['t2'] or 0) +
             float(tot4['t2'] or 0) 
             )
-        total_balance = total_balance - float(tot8['t2'] or 0)
+        total_balance = vndr.balance_amount
         print(total_balance)
 
 
@@ -34293,7 +34293,7 @@ def viewvendor(request, id):
             })    
  
         for item in paymnt:
-            Type='Purchase Payment'
+            Type='Payment Made'
             Number=int(item.pymntid)
             Date=item.paymentdate
             Total = int(item.paymentamount) if item.paymentamount else 0
@@ -34327,6 +34327,7 @@ def viewvendor(request, id):
             Balance=float(item.balance_amount)
             bal =vndr.balance_amount - int(item.grandtotal)
             vndr.balance_amount = bal
+            vndr.save()
             combined_data.append({
                 'Type':Type,
                 'Number':Number,
@@ -46072,6 +46073,7 @@ def get_transaction_data(request,id):
             Balance=float(item.balance_amount)
             bal =vndr.balance_amount - int(item.grandtotal)
             vndr.balance_amount = bal
+            vndr.save()
             combined_data.append({
                 'Type':Type,
                 'Number':Number,
@@ -55546,7 +55548,7 @@ def VendorStatement_mail(request,id):
                         tot9 = vendor.objects.filter(cid=cmp1, vendorid=id).all().aggregate(t2=Sum('openingbalance'))
 
                     # Corrected total balance calculation
-                        total_balance = (float(tot9['t2'] or 0)+float(tot6['t2'] or 0)  +float(tot4['t2'] or 0))
+                        total_balance = vndr.balance_amount
 
 
                         combined_data=[]
@@ -55638,7 +55640,7 @@ def VendorStatement_mail(request,id):
                             })    
 
                         for item in paymnt:
-                            Type='Purchase Payment'
+                            Type='Payment Made'
                             Number=int(item.pymntid)
                             Date=item.paymentdate
                             Total = int(item.paymentamount) if item.paymentamount else 0
@@ -55672,6 +55674,7 @@ def VendorStatement_mail(request,id):
                             Balance=float(item.balance_amount)
                             bal =vndr.balance_amount - int(item.grandtotal)
                             vndr.balance_amount = bal
+                            vndr.save()
                             combined_data.append({
                                 'Type':Type,
                                 'Number':Number,
@@ -55722,7 +55725,7 @@ def VendorStatement_mail(request,id):
                         tot9 = vendor.objects.filter(cid=cmp1, vendorid=id).all().aggregate(t2=Sum('openingbalance'))
 
                         # Corrected total balance calculation
-                        total_balance = (float(tot9['t2'] or 0)+float(tot6['t2'] or 0) +float(tot4['t2'] or 0) )
+                        total_balance = vndr.balance_amount
 
 
 
@@ -55817,7 +55820,7 @@ def VendorStatement_mail(request,id):
                             })    
 
                         for item in paymnt:
-                            Type='Purchase Payment'
+                            Type='Payment Made'
                             Number=int(item.pymntid)
                             Date=item.paymentdate
                             Total = int(item.paymentamount) if item.paymentamount else 0
@@ -55852,6 +55855,7 @@ def VendorStatement_mail(request,id):
                             Balance=float(item.balance_amount)
                             bal =vndr.balance_amount - int(item.grandtotal)
                             vndr.balance_amount = bal
+                            vndr.save()
                             combined_data.append({
                                 'Type':Type,
                                 'Number':Number,
@@ -56001,6 +56005,8 @@ def vendor_statement(request,id):
                 Date=item.date
                 Total=int(item.grand_total)
                 Balance=int(item.grand_total)  - int(item.paid_amount) if item.paid_amount is not None else 0
+                print('balaaaa')
+                print(Balance)
                 Balance = Balance + bal
                 vndr.balance_amount = Balance
                 vndr.save()
@@ -56062,7 +56068,7 @@ def vendor_statement(request,id):
                 })    
 
             for item in paymnt:
-                Type='Payment'
+                Type='Payment Made'
                 Number=int(item.pymntid)
                 Date=item.paymentdate
                 Total = int(item.paymentamount) if item.paymentamount else 0
@@ -56097,6 +56103,7 @@ def vendor_statement(request,id):
                         Balance=float(item.balance_amount)
                         bal =vndr.balance_amount - int(item.grandtotal)
                         vndr.balance_amount = bal
+                        vndr.save()
                         combined_data.append({
                             'Type':Type,
                             'Number':Number,
@@ -56184,6 +56191,8 @@ def vendor_statement(request,id):
                 Date=item.date
                 Total=int(item.grand_total)
                 Balance=int(item.grand_total)  - int(item.paid_amount) if item.paid_amount is not None else 0
+                print('balaaaa')
+                print(Balance)
                 Balance = Balance + bal
                 vndr.balance_amount = Balance
                 vndr.save()
@@ -56247,7 +56256,7 @@ def vendor_statement(request,id):
                 })    
 
             for item in paymnt:
-                Type='Purchase Payment'
+                Type='Payment Made'
                 Number=int(item.pymntid)
                 Date=item.paymentdate
                 Total = int(item.paymentamount) if item.paymentamount else 0
@@ -56282,6 +56291,7 @@ def vendor_statement(request,id):
                 Balance=float(item.balance_amount)
                 bal =vndr.balance_amount - int(item.grandtotal)
                 vndr.balance_amount = bal
+                vndr.save()
                 combined_data.append({
                     'Type':Type,
                     'Number':Number,

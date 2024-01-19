@@ -111,8 +111,11 @@
                                                             <td style="color: black;">{{data.Number}}</td>
                                                             <td style="color: black;">{{data.Total}}</td>
                                                             <td style="color: black;">{{data.paid}}</td>
-                                                            <td style="color: black;">{{data.Balance}}</td>
-                        
+                                                            {% if vndr.opening_balance_type == "Credit"  %}
+                                                            <td style="color: black;">{{data.Balance}} (cr)</td>
+                                                            {% else %}
+                                                            <td style="color: black;">{{data.Balance}} (dbt)</td>
+                                                            {% endif %}                        
                                                         </tr>
                                                         {% endfor %}<br>
                                                     <tr>

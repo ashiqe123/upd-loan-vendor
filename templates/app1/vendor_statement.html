@@ -161,11 +161,11 @@
                     <div class="collapse navbar-collapse tab" id="navbarSupportedContent">
                         <ul class="navbar-nav mr-auto">
                             <li class="nav-item">
-                                <a class="nav-link btn " href="{% url 'viewvendor' vndr.vendorid %}" role="button"  style="color: white;"><i class="fa fa-info-circle" style="font-size: large;">&nbsp;Overview</i><span class="sr-only">(current)</span></a>
+                                <a class="nav-link btn " role="button" onclick="Details()" style="color: white;"><i class="fa fa-info-circle" style="font-size: large;">&nbsp;Overview</i><span class="sr-only">(current)</span></a>
                             </li>
                             
                             <li class="nav-item">
-                                <a class="nav-link btn " href="{% url 'viewvendor' vndr.vendorid %}" role="button"  style="color: white;"><i class="fa fa-stack-exchange" style="font-size: large;">&nbsp;Transactions</i></a>
+                                <a class="nav-link btn " role="button" onclick="transaction()" style="color: white;"><i class="fa fa-stack-exchange" style="font-size: large;">&nbsp;Transactions</i></a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link btn " role="button" onclick="Statment()" style="color: white;"><i class="fa fa-tasks" style="font-size: large;">&nbsp;Statement</i></a>
@@ -184,7 +184,7 @@
                                         <i class="fa fa-share" style="font-size: medium;padding: 10px;">&nbsp;Share</i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="shareDropdown" style="background-color: black;">
-                                        <a class="dropdown-item" style="color: white; cursor: pointer;" onclick="shareViaWhatsApp()">WhatsApp</a>
+                                        <a class="dropdown-item" style="color: white; cursor: pointer;" href="https://web.whatsapp.com/" target="_blank">WhatsApp</a>
                                         <a class="dropdown-item" style="color: white; cursor: pointer;" data-target="#shareBillEmail" data-toggle="modal">Email</a>
                                     </div>
                                 </div>
@@ -496,8 +496,9 @@
                 </div>
 
                 
-                
-                <div id="statment"  >
+            <div id="whatToPrint11">
+
+                <div id="statment">
                     <div class="container-fluid" >
                         <div class="py-5">
                             <div>
@@ -549,7 +550,7 @@
                                   <div  class="card">
                                     <div id="panel">
                                         <div class="card-block1">
-                                            <div id="whatToPrint1" class="print-container card-body">
+                                            <div id="whatToPrint12" class="print-container card-body">
                                                 <div class="container bootdey">
                                                     <div class="row">
                                                         <div class="col-sm-12 col-sm-offset-1" style="padding:20px;">
@@ -646,8 +647,11 @@
                                                                                         <td style="color: black;">{{data.Number}}</td>
                                                                                         <td style="color: black;">{{data.Total}}</td>
                                                                                         <td style="color: black;">{{data.paid}}</td>
-                                                                                        <td style="color: black;">{{data.Balance}}</td>
-                                                    
+                                                                                        {% if vndr.opening_balance_type == "Credit"  %}
+                                                                                        <td style="color: black;">{{data.Balance}} (cr)</td>
+                                                                                        {% else %}
+                                                                                        <td style="color: black;">{{data.Balance}} (dbt)</td>
+                                                                                        {% endif %}
                                                                                     </tr>
                                                                                     {% endfor %}<br>
                                                                                 <tr>
@@ -1001,13 +1005,9 @@
     <script>
         function printDiv(){
 
-            print4 = document.getElementById('whatToPrint1')
-            if (print4.style.display !== 'none'){
-                    var printContents = document.getElementById("whatToPrint1").innerHTML;
-            }else{
-
-                var printContents = document.getElementById("whatToPrint").innerHTML;
-            }
+        
+            var printContents = document.getElementById("whatToPrint12").innerHTML;
+        
 
 
 
